@@ -89,7 +89,7 @@ async function run() {
           } else {
             const query = { email: decoded?.email };
             const result = await userCollection.findOne(query);
-            if (result?.email) {
+            if (result?.email && !result?.disabled) {
               res.status(200).send({ message: "success", status: false });
             } else {
               res
@@ -111,11 +111,42 @@ async function run() {
       res.send({ accessToken: token });
     });
 
+    app.get("/users", async (req, res) => {
+      const cursor = userCollection.find();
+      const users = await cursor.toArray();
+      res.send(users);
+    });
+
     // get single user
     app.get("/user/:email", async (req, res) => {
       const email = req.params.email;
       const query = { email };
       const result = await userCollection.findOne(query);
+      res.send(result);
+    });
+
+    // insert single user
+    app.post("/user", async (req, res) => {
+      const doc = req.body;
+      doc.disabled = false;
+      const result = await userCollection.insertOne(doc);
+      res.send(result);
+    });
+
+    // delete single user
+    app.delete("/user/:id", async (req, res) => {
+      const userId = req.params.id;
+      const query = { _id: ObjectId(userId) };
+      const result = await userCollection.deleteOne(query);
+      res.send(result);
+    });
+    // update user status
+    app.put("/user/:id", async (req, res) => {
+      const userId = req.params.id;
+      const doc = req.body;
+      const filter = { _id: ObjectId(userId) };
+      const update = { $set: { disabled: doc.status } };
+      const result = await userCollection.updateOne(filter, update);
       res.send(result);
     });
 
@@ -231,6 +262,16 @@ async function run() {
       res.send(result);
     });
 
+    // update service status
+    app.put("/service/:id", async (req, res) => {
+      const serviceId = req.params.id;
+      const doc = req.body;
+      const filter = { _id: ObjectId(serviceId) };
+      const update = { $set: { disabled: doc.status } };
+      const result = await serviceCollection.updateOne(filter, update);
+      res.send(result);
+    });
+
     // get all post
     app.get("/posts", async (req, res) => {
       const cursor = postCollection.find();
@@ -313,6 +354,7 @@ async function run() {
       res.send(result);
     });
 
+    // update course status
     app.put("/course/:id", async (req, res) => {
       const courseId = req.params.id;
       const doc = req.body;
