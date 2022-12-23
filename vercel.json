@@ -4,10 +4,6 @@
         {
             "src":"./index.js",
             "use":"@vercel/node"
-        },
-        {
-            "src":"./public/images",
-            "user":"@vercel/node"
         }
     ],
     "routes":[

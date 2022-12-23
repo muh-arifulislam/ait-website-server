@@ -316,7 +316,7 @@ async function run() {
     // get single event
     app.get("/event/:eventId", async (req, res) => {
       const eventId = req.params.eventId;
-      const query = { eventId };
+      const query = { _id: ObjectId(eventId) };
       const result = await eventCollection.findOne(query);
       res.send(result);
     });
@@ -395,7 +395,7 @@ async function run() {
     // get single post
     app.get("/post/:postId", async (req, res) => {
       const postId = req.params.postId;
-      const query = { postId };
+      const query = { _id: ObjectId(postId) };
       const result = await postCollection.findOne(query);
       res.send(result);
     });
