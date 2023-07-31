@@ -84,8 +84,7 @@ async function run() {
     const requestCollection = client.db("ait-website").collection("request");
 
     // app.use(express.static("public"));
-    // app.use("/public/images", express.static("public/images"));
-    app.use(express.static("public"));
+    app.use("/public/images", express.static("public/images"));
     function verifyJWT(req, res, next) {
       const authHeader = req.headers.authorization;
       const token = authHeader?.split(" ")[1];
